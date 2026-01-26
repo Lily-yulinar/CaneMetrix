@@ -4,12 +4,27 @@ from datetime import datetime
 import time
 
 # --- 1. KONFIGURASI HALAMAN ---
+# Kita set layout wide dan temanya nanti bakal ikut settingan browser (default putih)
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
+
+# Tambahan CSS buat maksa background jadi putih bersih dan teks gelap
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: white;
+    }
+    h1, h2, h3, p {
+        color: #1c4e80 !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: #1c4e80;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # --- 2. SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.title("🎋 CANE METRIX")
-    # Menu navigasi dibuat paling atas supaya variabel 'selected' selalu ada
     selected = option_menu(
         menu_title="Main Menu",
         options=["Dashboard", "Analisa Tetes"],
@@ -23,42 +38,47 @@ with st.sidebar:
 
 # --- 3. HALAMAN DASHBOARD ---
 if selected == "Dashboard":
-    # Wadah untuk update jam real-time
-    placeholder = st.empty()
+    # --- HEADER LOGO (Semua ditaruh di atas beb) ---
+    # Kita bagi jadi 5 kolom biar rapi (Logo - Logo - Judul - Logo - Logo)
+    l1, l2, l3, l4, l5 = st.columns([1, 1, 3, 1, 1])
     
-    with placeholder.container():
-        # Kolom Header: Logo Kiri - Judul - Logo Kanan
-        h1, h2, h3 = st.columns([1, 4, 1])
-        
-        with h1:
-            try:
-                # Pastikan file sgn.png sudah di-upload ke GitHub
-                st.image("sgn.png", width=100)
-            except:
-                st.caption("Logo SGN") # Muncul jika file tidak ditemukan
-        
-        with h2:
-            now = datetime.now()
-            tgl_skrg = now.strftime("%d %B %Y")
-            jam_skrg = now.strftime("%H:%M:%S")
-            st.markdown(f"""
-                <div style="text-align:center;">
-                    <h1 style="color:#1c4e80; margin:0;">🎋 CANE METRIX</h1>
-                    <p style="margin:0; font-weight: bold;">Accelerating QA Performance</p>
-                    <h2 style="color:#1c4e80; font-family: monospace;">{tgl_skrg} | {jam_skrg}</h2>
-                </div>
-            """, unsafe_allow_html=True)
+    with l1:
+        try:
+            st.image("sgn.png", width=100)
+        except:
+            st.caption("SGN")
             
-        with h3:
-            try:
-                # Pastikan file ptpn.png sudah di-upload ke GitHub
-                st.image("ptpn.png", width=100)
-            except:
-                st.caption("Logo PTPN")
+    with l2:
+        try:
+            st.image("ptpn.png", width=100)
+        except:
+            st.caption("PTPN")
 
-    st.write("") 
+    with l3:
+        now = datetime.now()
+        tgl_skrg = now.strftime("%d %B %Y")
+        jam_skrg = now.strftime("%H:%M:%S")
+        st.markdown(f"""
+            <div style="text-align:center;">
+                <h1 style="margin:0; font-size: 40px;">🎋 CANE METRIX</h1>
+                <p style="margin:0; font-weight: bold;">Accelerating QA Performance</p>
+                <h2 style="font-family: monospace; margin-top:5px;">{tgl_skrg} | {jam_skrg}</h2>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with l4:
+        try:
+            st.image("lpp.png", width=100)
+        except:
+            st.caption("LPP AGRO")
+            
+    with l5:
+        # Cadangan kalau ada logo lain, atau kosongin aja beb
+        st.write("")
+
+    st.divider() # Garis pemisah biar rapi
     
-    # Grid Menu Kotak-Kotak (Bento Style)
+    # --- GRID MENU KOTAK-KOTAK (Bento Style) ---
     col1, col2, col3 = st.columns(3)
     with col1:
         with st.container(border=True):
@@ -78,41 +98,16 @@ if selected == "Dashboard":
             st.write("Laporan bulanan QA.")
             st.button("Buka", key="btn3", use_container_width=True)
 
-    col4, col5, col6 = st.columns(3)
-    with col4:
-        with st.container(border=True):
-            st.markdown("### 🔄 Rekap Stasiun")
-            st.write("Cek performa stasiun.")
-            st.button("Cek", key="btn4", use_container_width=True)
-            
-    with col5:
-        with st.container(border=True):
-            st.markdown("### 🧮 Hitung")
-            st.write("Kalkulator manual.")
-            st.button("Mulai", key="btn5", use_container_width=True)
-            
-    with col6:
-        with st.container(border=True):
-            st.markdown("### 📈 Trend")
-            st.write("Grafik HK harian.")
-            st.button("Buka", key="btn6", use_container_width=True)
+    # Footer Status
+    st.write("")
+    st.info(f"🟢 Status Server: OK | Shift I | Terakhir Update: {jam_skrg}")
 
-    # Footer dengan Logo LPP Agro
-    st.divider()
-    f1, f2 = st.columns([5, 1])
-    f1.info(f"🟢 Status Server: OK | Terakhir Update: {jam_skrg}")
-    with f2:
-        try:
-            st.image("lpp.png", width=80)
-        except:
-            st.caption("Logo LPP")
-
-    # Logika Jam Real-time (Refresh tiap 1 detik)
+    # Jam Real-time
     time.sleep(1)
     st.rerun()
 
 # --- 4. HALAMAN ANALISA TETES ---
 elif selected == "Analisa Tetes":
     st.header("🎋 Analisa Tetes")
-    st.info("Menu kalkulasi Brix, Pol, dan HK Tetes otomatis.")
-    # Kode perhitungan lo yang tadi sore ditaruh di sini beb
+    st.info("Kalkulator otomatis untuk parameter Brix, Pol, dan HK.")
+    # Logika perhitungan lo tetep aman di sini
