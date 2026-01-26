@@ -19,7 +19,7 @@ bin_bg = get_base64('background.jpg')
 bin_sgn = get_base64('sgn.png')
 bin_lpp = get_base64('lpp.png')
 
-# --- 2. CSS SAKTI: MEGA HEADER & BOLD TEXT ---
+# --- 2. CSS SAKTI: GLOW ZONE & GIANT LOGO ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;800&display=swap');
@@ -40,78 +40,83 @@ st.markdown(f"""
         margin-top: 20px;
     }}
 
-    /* MEGA HEADER GLASTING */
+    /* MEGA HEADER DENGAN GLOW ZONE */
     .mega-header {{
-        background: linear-gradient(135deg, rgba(0, 48, 96, 0.95) 0%, rgba(0, 160, 176, 0.9) 100%);
-        padding: 40px 50px;
-        border-radius: 30px;
+        background: linear-gradient(135deg, rgba(0, 31, 63, 0.95) 0%, rgba(0, 128, 128, 0.9) 100%);
+        padding: 50px;
+        border-radius: 35px;
         color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
         border: 2px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 15px 35px rgba(0, 160, 176, 0.5);
-        margin-bottom: 30px;
-        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 128, 128, 0.4);
+        margin-bottom: 35px;
     }}
 
-    /* Judul Super Besar */
+    /* GRADASI TERANG (GLOW) DI BELAKANG LOGO */
+    .glow-zone {{
+        background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+        padding: 20px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }}
+
     .judul-mega {{
         font-family: 'Orbitron', sans-serif;
-        font-size: 65px; /* GEDE BANGET BEB */
+        font-size: 75px; /* MAKIN GEDE BEB */
         font-weight: 900;
-        letter-spacing: 8px;
+        letter-spacing: 10px;
         margin: 0;
         line-height: 1;
-        background: linear-gradient(to bottom, #ffffff, #a2e3fa);
+        background: linear-gradient(to bottom, #ffffff, #00ced1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+        filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
     }}
 
-    /* Tagline Gede */
     .tagline-mega {{
         font-family: 'Poppins', sans-serif;
-        font-size: 22px; /* GEDEIN DIKIT */
-        font-weight: 600;
-        letter-spacing: 3px;
-        margin-top: 10px;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        margin-top: 15px;
         color: #e0f7fa;
         text-transform: uppercase;
     }}
 
-    /* Jam & Tanggal Gede */
     .info-mega {{
         font-family: 'Poppins', sans-serif;
-        font-size: 20px;
-        font-weight: 400;
-        margin-top: 15px;
-        color: rgba(255,255,255,0.9);
-        border-top: 1px solid rgba(255,255,255,0.2);
-        padding-top: 10px;
+        font-size: 22px;
+        margin-top: 20px;
+        color: white;
+        border-top: 2px solid rgba(255,255,255,0.3);
+        padding-top: 15px;
     }}
 
-    /* Sapaan Petugas (BIAR KELIHATAN) */
     .sapaan-petugas {{
         text-align: center;
-        color: #003060; /* Biru Tua Bold */
+        color: #001f3f;
         font-family: 'Poppins', sans-serif;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: 800;
-        margin: 20px 0;
+        margin: 30px 0;
+        text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
     }}
 
-    /* TOMBOL GLASTING SHINY */
+    /* TOMBOL GLASTING MEGA SHINY */
     .stButton > button {{
-        height: 180px;
-        border-radius: 25px;
+        height: 190px;
+        border-radius: 30px;
         border: 2px solid rgba(255, 255, 255, 0.4) !important;
         font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        font-size: 22px;
+        font-weight: 800;
+        font-size: 24px;
         color: white !important;
-        background: linear-gradient(135deg, #001f3f, #004b78);
-        transition: 0.4s;
+        background: linear-gradient(135deg, #001f3f, #008080);
+        transition: 0.5s;
         position: relative;
         overflow: hidden;
     }}
@@ -123,15 +128,15 @@ st.markdown(f"""
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: 0.6s;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: 0.7s;
     }}
 
     .stButton > button:hover::before {{ left: 100%; }}
     .stButton > button:hover {{
-        transform: translateY(-12px);
-        box-shadow: 0 20px 40px rgba(0, 160, 176, 0.6);
-        border: 2px solid #00ced1 !important;
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0, 128, 128, 0.6);
+        border: 2px solid #ffffff !important;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -148,48 +153,45 @@ with st.sidebar:
 if selected == "Dashboard":
     now = datetime.utcnow() + timedelta(hours=7)
     
-    # MEGA HEADER (LOGO 95px)
+    # MEGA HEADER DENGAN LOGO RAKSASA (250px)
     st.markdown(f"""
         <div class="mega-header">
-            <div style="flex: 1; text-align: left;">
-                <img src="data:image/png;base64,{bin_sgn}" width="110">
+            <div class="glow-zone">
+                <img src="data:image/png;base64,{bin_sgn}" width="250" style="filter: drop-shadow(0 0 15px white);">
             </div>
-            <div style="flex: 3; text-align: center;">
-                <div style="font-size: 40px; margin-bottom: -15px;">🎋</div>
+            <div style="flex: 2; text-align: center;">
+                <div style="font-size: 50px; margin-bottom: -10px;">🎋</div>
                 <h1 class="judul-mega">CANE METRIX</h1>
                 <p class="tagline-mega">Accelerating QA Performance</p>
                 <div class="info-mega">
                     <b>{now.strftime('%d %B %Y')}</b> &nbsp; | &nbsp; <b>{now.strftime('%H:%M:%S')}</b>
                 </div>
             </div>
-            <div style="flex: 1; text-align: right;">
-                <img src="data:image/png;base64,{bin_lpp}" width="110">
+            <div class="glow-zone">
+                <img src="data:image/png;base64,{bin_lpp}" width="250" style="filter: drop-shadow(0 0 15px white);">
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    # Tulisan Sapaan yang sekarang SANGAT KELIHATAN
     st.markdown(f"""
         <div class="sapaan-petugas">
-            Hello, Planters! Let's optimize <span style="color: #00ced1;">{shift_pilih}</span> analysis today.
+            Hello, Planters! Optimization mode active for <span style="color: #008080;">{shift_pilih}</span>.
         </div>
     """, unsafe_allow_html=True)
 
-    # Menu Grid
+    # Menu Grid Glasting
     m1, m2, m3 = st.columns(3)
-    with m1: st.button("📝\nINPUT DATA", key="m1", use_container_width=True)
-    with m2: st.button("📊\nDAILY DB", key="m2", use_container_width=True)
-    with m3: st.button("📂\nMONTHLY DB", key="m3", use_container_width=True)
+    with m1: st.button("📝\nINPUT DATA", key="btn1", use_container_width=True)
+    with m2: st.button("📊\nDAILY DB", key="btn2", use_container_width=True)
+    with m3: st.button("📂\nMONTHLY DB", key="btn3", use_container_width=True)
 
     m4, m5, m6 = st.columns(3)
-    with m4: st.button("🔄\nSTATIONS", key="m4", use_container_width=True)
-    with m5: st.button("🧮\nCALCULATOR", key="m5", use_container_width=True)
-    with m6: st.button("👤\nACCOUNT", key="m6", use_container_width=True)
+    with m4: st.button("🔄\nSTATIONS", key="btn4", use_container_width=True)
+    with m5: st.button("🧮\nCALCULATOR", key="btn5", use_container_width=True)
+    with m6: st.button("👤\nACCOUNT", key="btn6", use_container_width=True)
 
     time.sleep(1)
     st.rerun()
 
 elif selected == "Analisa Tetes":
-    st.markdown(f"<h2 style='color:#003060;'>🧪 Analysis - {shift_pilih}</h2>", unsafe_allow_html=True)
-    with st.container(border=True):
-        st.write("Ready to process data.")
+    st.markdown(f"<h2 style='color:#001f3f;'>🧪 Analysis - {shift_pilih}</h2>", unsafe_allow_html=True)
