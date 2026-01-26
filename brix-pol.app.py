@@ -6,9 +6,10 @@ import time
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# --- 2. SIDEBAR NAVIGATION (Dibuat di awal supaya gak error! beb) ---
+# --- 2. SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.title("🎋 CANE METRIX")
+    # Menu navigasi dibuat paling atas supaya variabel 'selected' selalu ada
     selected = option_menu(
         menu_title="Main Menu",
         options=["Dashboard", "Analisa Tetes"],
@@ -22,6 +23,7 @@ with st.sidebar:
 
 # --- 3. HALAMAN DASHBOARD ---
 if selected == "Dashboard":
+    # Wadah untuk update jam real-time
     placeholder = st.empty()
     
     with placeholder.container():
@@ -29,7 +31,11 @@ if selected == "Dashboard":
         h1, h2, h3 = st.columns([1, 4, 1])
         
         with h1:
-            st.image("sgn.png", width=100) # Pastikan file sgn.png ada di GitHub
+            try:
+                # Pastikan file sgn.png sudah di-upload ke GitHub
+                st.image("sgn.png", width=100)
+            except:
+                st.caption("Logo SGN") # Muncul jika file tidak ditemukan
         
         with h2:
             now = datetime.now()
@@ -44,7 +50,11 @@ if selected == "Dashboard":
             """, unsafe_allow_html=True)
             
         with h3:
-            st.image("ptpn.png", width=100) # Pastikan file ptpn.png ada di GitHub
+            try:
+                # Pastikan file ptpn.png sudah di-upload ke GitHub
+                st.image("ptpn.png", width=100)
+            except:
+                st.caption("Logo PTPN")
 
     st.write("") 
     
@@ -68,18 +78,41 @@ if selected == "Dashboard":
             st.write("Laporan bulanan QA.")
             st.button("Buka", key="btn3", use_container_width=True)
 
-    # Footer dengan Logo LPP
+    col4, col5, col6 = st.columns(3)
+    with col4:
+        with st.container(border=True):
+            st.markdown("### 🔄 Rekap Stasiun")
+            st.write("Cek performa stasiun.")
+            st.button("Cek", key="btn4", use_container_width=True)
+            
+    with col5:
+        with st.container(border=True):
+            st.markdown("### 🧮 Hitung")
+            st.write("Kalkulator manual.")
+            st.button("Mulai", key="btn5", use_container_width=True)
+            
+    with col6:
+        with st.container(border=True):
+            st.markdown("### 📈 Trend")
+            st.write("Grafik HK harian.")
+            st.button("Buka", key="btn6", use_container_width=True)
+
+    # Footer dengan Logo LPP Agro
     st.divider()
     f1, f2 = st.columns([5, 1])
     f1.info(f"🟢 Status Server: OK | Terakhir Update: {jam_skrg}")
-    f2.image("lpp.png", width=80)
+    with f2:
+        try:
+            st.image("lpp.png", width=80)
+        except:
+            st.caption("Logo LPP")
 
-    # Jam Real-time
+    # Logika Jam Real-time (Refresh tiap 1 detik)
     time.sleep(1)
     st.rerun()
 
 # --- 4. HALAMAN ANALISA TETES ---
 elif selected == "Analisa Tetes":
     st.header("🎋 Analisa Tetes")
-    st.write("Masukkan data untuk kalkulasi otomatis.")
-    # Kode perhitungan brix-pol lo taruh di bawah sini beb
+    st.info("Menu kalkulasi Brix, Pol, dan HK Tetes otomatis.")
+    # Kode perhitungan lo yang tadi sore ditaruh di sini beb
