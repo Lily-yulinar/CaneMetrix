@@ -16,17 +16,17 @@ def get_base64(bin_file):
         return base64.b64encode(data).decode()
     return ""
 
-# Load Aset (Pastikan nama file sesuai: background.jpg, sgn.png, lpp.png)
+# Load Aset (background.jpg, sgn.png, lpp.png)
 bin_bg = get_base64('background.jpg')
 bin_sgn = get_base64('sgn.png')
 bin_lpp = get_base64('lpp.png')
 
-# --- 2. CSS SAKTI: LUXURY GLASTING EDITION ---
+# --- 2. CSS SAKTI: LUXURY GLASTING & MINI LOGO ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
-    /* Background Utama */
+    /* Background Utama: Fix agar background.jpg muncul */
     .stApp {{
         background: url("data:image/jpg;base64,{bin_bg}");
         background-size: cover;
@@ -34,7 +34,7 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
 
-    /* Kontainer Utama (Glassmorphism Effect) */
+    /* Kontainer Utama (Glassmorphism) */
     .main .block-container {{
         background: rgba(255, 255, 255, 0.75);
         border-radius: 30px;
@@ -44,10 +44,10 @@ st.markdown(f"""
         margin-top: 30px;
     }}
 
-    /* Header Luxury Glasting (Biru Muda Mengkilap) */
+    /* Header Glasting Biru Muda Mewah */
     .luxury-header {{
         background: linear-gradient(135deg, rgba(0, 150, 199, 0.9) 0%, rgba(0, 206, 209, 0.8) 100%);
-        padding: 25px 40px;
+        padding: 20px 40px;
         border-radius: 25px;
         color: white;
         display: flex;
@@ -60,7 +60,7 @@ st.markdown(f"""
 
     .judul-futuristik {{
         font-family: 'Orbitron', sans-serif;
-        font-size: 45px;
+        font-size: 40px;
         letter-spacing: 5px;
         margin: 0;
         background: linear-gradient(to bottom, #ffffff, #e0f7fa);
@@ -69,14 +69,14 @@ st.markdown(f"""
         filter: drop-shadow(0 0 10px rgba(255,255,255,0.6));
     }}
 
-    /* TOMBOL MENU: Glasting Effect on Hover */
+    /* TOMBOL MENU GLASTING */
     .stButton > button {{
-        height: 180px;
+        height: 160px;
         border-radius: 25px;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
-        font-size: 20px;
+        font-size: 18px;
         color: white !important;
         background: linear-gradient(135deg, rgba(0, 31, 63, 0.85), rgba(0, 75, 120, 0.9));
         transition: all 0.4s ease;
@@ -84,7 +84,7 @@ st.markdown(f"""
         overflow: hidden;
     }}
 
-    /* Efek Kilatan Pas Cursor Lewat */
+    /* Efek Kilatan Pas Kursor Geser */
     .stButton > button::before {{
         content: "";
         position: absolute;
@@ -108,11 +108,11 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. SIDEBAR (Tempat Shift) ---
+# --- 3. SIDEBAR (Shift Manager) ---
 with st.sidebar:
     st.markdown("<h2 style='text-align:center;'>🎋 CANE METRIX</h2>", unsafe_allow_html=True)
     st.write("---")
-    shift_pilih = st.selectbox("Pilih Shift Operasional:", ["SHIFT I", "SHIFT II", "SHIFT III"])
+    shift_pilih = st.selectbox("Shift Operasional:", ["SHIFT I", "SHIFT II", "SHIFT III"])
     
     selected = option_menu(
         menu_title=None,
@@ -122,31 +122,31 @@ with st.sidebar:
     )
     st.info(f"🟢 Petugas: **{shift_pilih}**")
 
-# --- 4. HALAMAN DASHBOARD ---
+# --- 4. DASHBOARD UTAMA ---
 if selected == "Dashboard":
     now = datetime.utcnow() + timedelta(hours=7)
     
-    # Header Section (Logo SGN & LPP Simetris)
+    # Header Section (Logo SGN & LPP Mini 1/2 Ukuran)
     st.markdown(f"""
         <div class="luxury-header">
             <div style="flex: 1; text-align: left;">
-                <img src="data:image/png;base64,{bin_sgn}" width="130">
+                <img src="data:image/png;base64,{bin_sgn}" width="65">
             </div>
             <div style="flex: 2; text-align: center;">
-                <div style="font-size: 28px; margin-bottom: -10px;">🎋</div>
+                <div style="font-size: 24px; margin-bottom: -10px;">🎋</div>
                 <h1 class="judul-futuristik">CANE METRIX</h1>
-                <p style="font-family: 'Poppins'; font-weight: 300; letter-spacing: 1px; margin:0; font-size: 14px;">ACCELERATING QA PERFORMANCE</p>
-                <small style="opacity: 0.9;">{now.strftime('%d %B %Y')} | {now.strftime('%H:%M:%S')}</small>
+                <p style="font-family: 'Poppins'; font-weight: 300; letter-spacing: 1px; margin:0; font-size: 12px; opacity:0.9;">ACCELERATING QA PERFORMANCE</p>
+                <small style="opacity: 0.8; font-size: 11px;">{now.strftime('%d %B %Y')} | {now.strftime('%H:%M:%S')}</small>
             </div>
             <div style="flex: 1; text-align: right;">
-                <img src="data:image/png;base64,{bin_lpp}" width="130">
+                <img src="data:image/png;base64,{bin_lpp}" width="65">
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(f"<h4 style='text-align:center; color:#001f3f; font-family:Poppins;'>Hello, Planters! Dashboard optimized for <b>{shift_pilih}</b>.</h4>", unsafe_allow_html=True)
+    st.markdown(f"<h5 style='text-align:center; color:#001f3f; font-family:Poppins;'>Welcome, Planters! Let's optimize <b>{shift_pilih}</b>.</h5>", unsafe_allow_html=True)
 
-    # Bento Grid Menu
+    # Grid Menu Shiny
     m1, m2, m3 = st.columns(3)
     with m1: st.button("📝\nINPUT DATA", key="b1", use_container_width=True)
     with m2: st.button("📊\nDAILY DB", key="b2", use_container_width=True)
@@ -155,13 +155,13 @@ if selected == "Dashboard":
     m4, m5, m6 = st.columns(3)
     with m4: st.button("🔄\nSTATIONS", key="b4", use_container_width=True)
     with m5: st.button("🧮\nCALCULATOR", key="b5", use_container_width=True)
-    with m6: st.button("⚙️\nSETTINGS", key="b6", use_container_width=True)
+    with m6: st.button("👤\nACCOUNT", key="b6", use_container_width=True)
 
     time.sleep(1)
     st.rerun()
 
-# --- 5. HALAMAN ANALISA TETES ---
+# --- 5. ANALISA TETES (Back-end Logic Aman) ---
 elif selected == "Analisa Tetes":
     st.markdown(f"<h2>🧪 Quality Analysis - {shift_pilih}</h2>", unsafe_allow_html=True)
     with st.container(border=True):
-        st.write("Silakan masukkan data lab untuk shift yang bertugas.")
+        st.write("Back-end Interpolasi & HK Calculation is active.")
