@@ -6,7 +6,7 @@ import time
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# CSS SAKTI: Maksa Background Putih & Ukuran Logo Konsisten
+# CSS SAKTI: Skala 6.0 & Top 40px buat PTPN
 st.markdown("""
     <style>
     .stApp { background-color: white; }
@@ -14,22 +14,30 @@ st.markdown("""
     [data-testid="stMetricValue"] { color: #1c4e80; }
     .st-emotion-cache-12w0qpk { background-color: #f0f2f6; }
     
-    /* CSS biar elemen di kolom sejajar tengah secara vertikal */
+    /* Rata tengah vertikal untuk semua kolom */
     [data-testid="column"] {
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* TRIK RAHASIA: Paksa Logo Kanan Gede & Sejajar */
+    /* TRIK KHUSUS PTPN: Skala 6.0 & Turun 40px */
     .logo-ptpn img {
-        transform: scale(3.5); /* Gue zoom 3.5x biar kelihatan gede njir! */
+        transform: scale(6.0) !important; 
         transform-origin: center;
-        margin-right: 20px;
+        padding-top: 40px !important; 
     }
     
+    /* Logo LPP Agro */
     .logo-lpp img {
-        transform: scale(1.2); /* LPP cukup zoom dikit biar nggak kebanting */
+        transform: scale(1.5);
+        transform-origin: center;
+        padding-top: 15px;
+    }
+
+    /* Logo SGN di kiri */
+    .logo-sgn img {
+        transform: scale(1.1);
         transform-origin: center;
     }
     </style>
@@ -58,15 +66,16 @@ if selected == "Dashboard":
 
     # Header Utama
     with st.container():
-        # Kolom: [SGN] - [Judul Tengah] - [PTPN & LPP]
+        # Kolom: [SGN] - [Judul] - [PTPN & LPP]
         l, m, r = st.columns([1, 2.5, 1.2], vertical_alignment="center")
         
         with l:
+            st.markdown('<div class="logo-sgn">', unsafe_allow_html=True)
             try:
-                # SGN udah cakep, tinggal pasin ukurannya
                 st.image("sgn.png", width=160)
             except:
                 st.caption("Logo SGN")
+            st.markdown('</div>', unsafe_allow_html=True)
         
         with m:
             st.markdown(f"""
@@ -78,10 +87,9 @@ if selected == "Dashboard":
             """, unsafe_allow_html=True)
             
         with r:
-            # Kita bagi 2 sub-kolom buat logo kanan
             k1, k2 = st.columns(2, vertical_alignment="center")
             with k1:
-                # PTPN dikasih class khusus buat di-zoom CSS
+                # PTPN - Skala 6.0 & Top 40px via CSS
                 st.markdown('<div class="logo-ptpn">', unsafe_allow_html=True)
                 try: 
                     st.image("ptpn.png", use_container_width=True) 
@@ -89,7 +97,6 @@ if selected == "Dashboard":
                     st.caption("PTPN")
                 st.markdown('</div>', unsafe_allow_html=True)
             with k2:
-                # LPP dikasih class khusus juga
                 st.markdown('<div class="logo-lpp">', unsafe_allow_html=True)
                 try: 
                     st.image("lpp.png", use_container_width=True)
@@ -99,22 +106,19 @@ if selected == "Dashboard":
 
     st.divider()
 
-    # --- GRID MENU KOTAK-KOTAK ---
+    # --- GRID MENU DASHBOARD ---
     c1, c2, c3 = st.columns(3)
     with c1:
         with st.container(border=True):
             st.markdown("### 📋 Input Data")
-            st.write("Input harian sampel lab.")
             st.button("Buka", key="b1", use_container_width=True)
     with c2:
         with st.container(border=True):
             st.markdown("### 📊 DB Harian")
-            st.write("Rekap data per shift.")
             st.button("Lihat", key="b2", use_container_width=True)
     with c3:
         with st.container(border=True):
             st.markdown("### 📂 DB Bulanan")
-            st.write("Laporan bulanan QA.")
             st.button("Buka", key="b3", use_container_width=True)
 
     c4, c5, c6 = st.columns(3)
@@ -131,11 +135,15 @@ if selected == "Dashboard":
             st.markdown("### 📈 Trend")
             st.button("Buka", key="b6", use_container_width=True)
 
-    # Trick Jam Real-time
+    # Footer Status
+    st.write("")
+    st.info(f"🟢 Server OK | WIB | {jam_skrg}")
+
+    # Real-time Update
     time.sleep(1)
     st.rerun()
 
 # --- 4. HALAMAN ANALISA TETES ---
 elif selected == "Analisa Tetes":
     st.header("🎋 Analisa Tetes")
-    st.info("Halaman kalkulator otomatis.")
+    st.info("Kalkulator Analisa Lab Otomatis.")
