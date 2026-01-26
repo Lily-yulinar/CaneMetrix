@@ -4,7 +4,7 @@ from streamlit_option_menu import option_menu
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🧪", layout="wide")
 
-# --- 2. DATABASE KOREKSI BRIX (Tabel Fisik Lo) ---
+# --- 2. DATABASE KOREKSI BRIX (Sesuai Foto Tabel Lo) ---
 data_koreksi_brix = {
     25: -0.19, 26: -0.12, 27: -0.05, 28: 0.02, 29: 0.09,
     30: 0.16, 31: 0.24, 32: 0.31, 33: 0.38, 34: 0.46,
@@ -13,7 +13,6 @@ data_koreksi_brix = {
     45: 1.34, 46: 1.42, 47: 1.50, 48: 1.58, 49: 1.66, 50: 1.72
 }
 
-# Fungsi Interpolasi Otomatis
 def hitung_interpolasi(suhu):
     suhu_list = sorted(data_koreksi_brix.keys())
     if suhu in data_koreksi_brix:
@@ -25,7 +24,7 @@ def hitung_interpolasi(suhu):
             return y1 + (suhu - x1) * (y2 - y1) / (x2 - x1)
     return None
 
-# --- 3. SIDEBAR NAVIGATION (CANE METRIX STYLE) ---
+# --- 3. SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.title("CANE METRIX")
     st.write("Accelerating QA Performance")
@@ -41,23 +40,17 @@ with st.sidebar:
     
     st.divider()
     st.caption("Status Server: ✅ OK")
-    st.caption("Versi: 1.1 (Stable)")
 
-# --- 4. LOGIKA PINDAH HALAMAN ---
+# --- 4. LOGIKA HALAMAN ---
 
 if selected == "Dashboard":
     st.title("🏠 Welcome, Planters!")
-    st.write("Gunakan menu di samping untuk mulai menghitung hasil lab secara akurat.")
-    
-    # Placeholder untuk info ringkas
-    c1, c2 = st.columns(2)
-    with c1:
-        st.info("💡 **Tips:** Pastikan suhu sampel stabil saat diukur untuk hasil maksimal.")
-    with c2:
-        st.success("✅ **Status:** Semua modul perhitungan siap digunakan.")
+    st.write("Selamat datang di pusat kendali mutu **CANE METRIX**.")
+    st.info("Pilih menu di samping untuk mulai melakukan analisa laboratorium.")
 
 elif selected == "Hitung Brix":
     st.header("📊 Perhitungan Brix Koreksi")
+    st.write("Gunakan form ini untuk menghitung Brix yang telah dikoreksi suhu (20°C).")
     st.markdown("---")
     
     col1, col2 = st.columns(2)
@@ -76,20 +69,16 @@ elif selected == "Hitung Brix":
             res1.metric("Brix Asli", f"{brix_baca}")
             res2.metric("Koreksi Suhu", f"{kor:+.3f}")
             res3.metric("Brix Koreksi", f"{round(brix_akhir, 3)}")
-            st.success(f"Brix Koreksi pada suhu {suhu_in}°C berhasil dihitung.")
+            st.success(f"Analisa selesai untuk suhu {suhu_in}°C")
 
 elif selected == "Hitung Pol":
     st.header("🧪 Perhitungan Pol")
-    st.markdown("---")
-    st.info("Beb, bagian ini tinggal nunggu lo kirim rumusnya aja. Langsung gw update nanti!")
-    # Nanti kita masukin rumus Pol di sini
+    st.info("Kirim rumusnya ke gue ya beb, biar langsung gue isi modul ini!")
 
 elif selected == "Hitung Purity":
     st.header("📈 Perhitungan Purity (HK)")
-    st.markdown("---")
-    st.info("Rumus: (Pol / Brix) x 100. Modul ini akan aktif setelah perhitungan Pol selesai.")
+    st.info("Modul ini akan menghitung HK otomatis dari data Brix & Pol.")
 
 elif selected == "Analisa Tetes":
     st.header("⚗️ Analisa Tetes")
-    st.markdown("---")
-    st.write("Bagian ini bisa kita buat khusus untuk input data tetes sekaligus.")
+    st.write("Modul integrasi analisa tetes tebu.")
