@@ -6,14 +6,15 @@ import time
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# CSS Maksa Background Putih & Teks Biru Gelap
+# CSS Maksa Background Putih & Teks Biru Gelap + Sejajarin Logo
 st.markdown("""
     <style>
     .stApp { background-color: white; }
     h1, h2, h3, p, span, label { color: #1c4e80 !important; }
     [data-testid="stMetricValue"] { color: #1c4e80; }
     .st-emotion-cache-12w0qpk { background-color: #f0f2f6; }
-    /* Biar logo & judul sejajar vertikal */
+    
+    /* CSS Khusus Sejajarin Logo & Judul */
     [data-testid="column"] {
         display: flex;
         align-items: center;
@@ -41,17 +42,17 @@ if selected == "Dashboard":
     placeholder = st.empty()
     
     with placeholder.container():
-        # Kolom Header: [SGN (Kiri)] - [JUDUL (Tengah)] - [PTPN & LPP (Kanan)]
-        l1, l2, l3 = st.columns([1, 3, 1.2])
+        # Header: SGN (Kiri) | Judul (Tengah) | PTPN & LPP (Kanan)
+        l1, l2, l3 = st.columns([1, 3, 1.2], vertical_alignment="center")
         
         with l1:
             try:
-                st.image("sgn.png", width=130)
+                st.image("sgn.png", width=140)
             except:
                 st.caption("Logo SGN")
             
         with l2:
-            # FIX JAM: Tambah 7 jam biar jadi WIB (Waktu Indonesia Barat)
+            # FIX JAM: Tambah 7 jam biar jadi WIB
             now_wib = datetime.utcnow() + timedelta(hours=7)
             tgl_skrg = now_wib.strftime("%d %B %Y")
             jam_skrg = now_wib.strftime("%H:%M:%S")
@@ -65,18 +66,18 @@ if selected == "Dashboard":
             """, unsafe_allow_html=True)
 
         with l3:
-            # Dua logo di kanan disejajarkan sampingan
-            col_kanan1, col_kanan2 = st.columns(2)
-            with col_kanan1:
-                try: st.image("ptpn.png", width=85)
+            # Duo Logo di Kanan disejajarkan
+            rc1, rc2 = st.columns(2)
+            with rc1:
+                try: st.image("ptpn.png", width=90)
                 except: st.caption("PTPN")
-            with col_kanan2:
-                try: st.image("lpp.png", width=85)
+            with rc2:
+                try: st.image("lpp.png", width=90)
                 except: st.caption("LPP")
 
     st.divider()
     
-    # Grid Kotak-Kotak (Bento Style)
+    # Grid Menu Kotak-Kotak (Bento Style)
     c1, c2, c3 = st.columns(3)
     with c1:
         with st.container(border=True):
@@ -123,3 +124,4 @@ if selected == "Dashboard":
 elif selected == "Analisa Tetes":
     st.header("🎋 Analisa Tetes")
     st.info("Kalkulator otomatis untuk parameter Brix, Pol, dan HK.")
+    # (Logika perhitungan lo bisa ditaruh di sini beb)
