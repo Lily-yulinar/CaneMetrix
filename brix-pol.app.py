@@ -6,7 +6,7 @@ import time
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# CSS Maksa Background Putih & Teks Biru Gelap + Sejajarin Logo
+# CSS SAKTI: Paksa Tinggi Logo Sama & Sejajar Tengah
 st.markdown("""
     <style>
     .stApp { background-color: white; }
@@ -14,7 +14,14 @@ st.markdown("""
     [data-testid="stMetricValue"] { color: #1c4e80; }
     .st-emotion-cache-12w0qpk { background-color: #f0f2f6; }
     
-    /* CSS Khusus Sejajarin Logo & Judul */
+    /* CSS biar logo nggak kecil sebelah */
+    img {
+        max-height: 80px; /* Paksa tinggi maksimal semua logo sama */
+        width: auto;      /* Lebar menyesuaikan biar nggak gepeng */
+        object-fit: contain;
+    }
+
+    /* Paksa kolom sejajar vertikal di tengah */
     [data-testid="column"] {
         display: flex;
         align-items: center;
@@ -39,45 +46,48 @@ with st.sidebar:
 
 # --- 3. HALAMAN DASHBOARD ---
 if selected == "Dashboard":
-    placeholder = st.empty()
-    
-    with placeholder.container():
-        # Header: SGN (Kiri) | Judul (Tengah) | PTPN & LPP (Kanan)
-        l1, l2, l3 = st.columns([1, 3, 1.2], vertical_alignment="center")
+    # Jam WIB (Waktu Indonesia Barat)
+    now_wib = datetime.utcnow() + timedelta(hours=7)
+    tgl_skrg = now_wib.strftime("%d %B %Y")
+    jam_skrg = now_wib.strftime("%H:%M:%S")
+
+    # Wadah Header
+    with st.container():
+        # Kolom: [SGN] - [Judul] - [PTPN & LPP]
+        l, m, r = st.columns([1, 2.5, 1.2], vertical_alignment="center")
         
-        with l1:
+        with l:
             try:
-                st.image("sgn.png", width=140)
+                st.image("sgn.png") # Width dilepas biar diatur CSS img di atas
             except:
                 st.caption("Logo SGN")
-            
-        with l2:
-            # FIX JAM: Tambah 7 jam biar jadi WIB
-            now_wib = datetime.utcnow() + timedelta(hours=7)
-            tgl_skrg = now_wib.strftime("%d %B %Y")
-            jam_skrg = now_wib.strftime("%H:%M:%S")
-            
+        
+        with m:
             st.markdown(f"""
                 <div style="text-align:center;">
                     <h1 style="margin:0; font-size: 45px;">🎋 CANE METRIX</h1>
                     <p style="margin:0; font-weight: bold; font-size: 18px;">Accelerating QA Performance</p>
-                    <h2 style="font-family: monospace; margin-top:5px;">{tgl_skrg} | {jam_skrg}</h2>
+                    <h2 style="font-family: monospace; margin-top:5px; font-size: 30px;">{tgl_skrg} | {jam_skrg}</h2>
                 </div>
             """, unsafe_allow_html=True)
-
-        with l3:
-            # Duo Logo di Kanan disejajarkan
-            rc1, rc2 = st.columns(2)
-            with rc1:
-                try: st.image("ptpn.png", width=90)
-                except: st.caption("PTPN")
-            with rc2:
-                try: st.image("lpp.png", width=90)
-                except: st.caption("LPP")
+            
+        with r:
+            # Sub-kolom buat duo logo kanan
+            k1, k2 = st.columns(2, vertical_alignment="center")
+            with k1:
+                try: 
+                    st.image("ptpn.png") # Ini yang tadi kekecilan, sekarang dipaksa CSS
+                except: 
+                    st.caption("PTPN")
+            with k2:
+                try: 
+                    st.image("lpp.png")
+                except: 
+                    st.caption("LPP")
 
     st.divider()
-    
-    # Grid Menu Kotak-Kotak (Bento Style)
+
+    # --- GRID MENU KOTAK-KOTAK ---
     c1, c2, c3 = st.columns(3)
     with c1:
         with st.container(border=True):
@@ -112,16 +122,11 @@ if selected == "Dashboard":
             st.write("Grafik HK harian.")
             st.button("Buka", key="b6", use_container_width=True)
 
-    # Footer Status
-    st.write("")
-    st.info(f"🟢 Status Server: OK | Shift I | WIB (Waktu Indonesia Barat)")
-
-    # Jam Real-time
+    # Refresh tiap detik biar jam jalan
     time.sleep(1)
     st.rerun()
 
 # --- 4. HALAMAN ANALISA TETES ---
 elif selected == "Analisa Tetes":
     st.header("🎋 Analisa Tetes")
-    st.info("Kalkulator otomatis untuk parameter Brix, Pol, dan HK.")
-    # (Logika perhitungan lo bisa ditaruh di sini beb)
+    st.info("Kalkulator otomatis Brix, Pol, dan HK.")
