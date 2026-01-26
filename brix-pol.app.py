@@ -6,7 +6,7 @@ import time
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# CSS SAKTI: Skala 6.0 & Top 40px buat PTPN
+# CSS SAKTI: Mode Super Jumbo 12x & 100px Top
 st.markdown("""
     <style>
     .stApp { background-color: white; }
@@ -14,25 +14,25 @@ st.markdown("""
     [data-testid="stMetricValue"] { color: #1c4e80; }
     .st-emotion-cache-12w0qpk { background-color: #f0f2f6; }
     
-    /* Rata tengah vertikal untuk semua kolom */
+    /* Rata tengah vertikal buat semua kolom */
     [data-testid="column"] {
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* TRIK KHUSUS PTPN: Skala 6.0 & Turun 40px */
+    /* MODE RAKSASA: PTPN Scale 12x & Turun 100px */
     .logo-ptpn img {
-        transform: scale(6.0) !important; 
+        transform: scale(12.0) !important; 
         transform-origin: center;
-        padding-top: 40px !important; 
+        padding-top: 100px !important; 
     }
     
-    /* Logo LPP Agro */
+    /* Logo LPP Agro (Gue sesuaikan biar nggak kebanting) */
     .logo-lpp img {
-        transform: scale(1.5);
+        transform: scale(1.8);
         transform-origin: center;
-        padding-top: 15px;
+        padding-top: 20px;
     }
 
     /* Logo SGN di kiri */
@@ -89,7 +89,7 @@ if selected == "Dashboard":
         with r:
             k1, k2 = st.columns(2, vertical_alignment="center")
             with k1:
-                # PTPN - Skala 6.0 & Top 40px via CSS
+                # PTPN - Skala 12.0 & Top 100px via CSS
                 st.markdown('<div class="logo-ptpn">', unsafe_allow_html=True)
                 try: 
                     st.image("ptpn.png", use_container_width=True) 
@@ -135,11 +135,7 @@ if selected == "Dashboard":
             st.markdown("### 📈 Trend")
             st.button("Buka", key="b6", use_container_width=True)
 
-    # Footer Status
-    st.write("")
-    st.info(f"🟢 Server OK | WIB | {jam_skrg}")
-
-    # Real-time Update
+    # Refresh tiap detik
     time.sleep(1)
     st.rerun()
 
