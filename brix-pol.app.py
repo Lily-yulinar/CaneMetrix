@@ -6,7 +6,7 @@ import time
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# CSS SAKTI: Mode Super Jumbo 12x & 100px Top
+# CSS: Background Putih & Sejajarin Logo (Kiri-Kanan)
 st.markdown("""
     <style>
     .stApp { background-color: white; }
@@ -14,31 +14,18 @@ st.markdown("""
     [data-testid="stMetricValue"] { color: #1c4e80; }
     .st-emotion-cache-12w0qpk { background-color: #f0f2f6; }
     
-    /* Rata tengah vertikal buat semua kolom */
+    /* Paksa kolom sejajar vertikal di tengah */
     [data-testid="column"] {
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* MODE RAKSASA: PTPN Scale 12x & Turun 100px */
-    .logo-ptpn img {
-        transform: scale(12.0) !important; 
-        transform-origin: center;
-        padding-top: 100px !important; 
-    }
-    
-    /* Logo LPP Agro (Gue sesuaikan biar nggak kebanting) */
-    .logo-lpp img {
-        transform: scale(1.8);
-        transform-origin: center;
-        padding-top: 20px;
-    }
-
-    /* Logo SGN di kiri */
-    .logo-sgn img {
-        transform: scale(1.1);
-        transform-origin: center;
+    /* Styling Logo agar konsisten */
+    .logo-container img {
+        max-height: 80px;
+        width: auto;
+        object-fit: contain;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -66,43 +53,31 @@ if selected == "Dashboard":
 
     # Header Utama
     with st.container():
-        # Kolom: [SGN] - [Judul] - [PTPN & LPP]
-        l, m, r = st.columns([1, 2.5, 1.2], vertical_alignment="center")
+        # Kolom: [SGN (Kiri)] - [Judul (Tengah)] - [LPP (Kanan)]
+        l, m, r = st.columns([1, 2.5, 1], vertical_alignment="center")
         
         with l:
-            st.markdown('<div class="logo-sgn">', unsafe_allow_html=True)
+            # Logo SGN
             try:
                 st.image("sgn.png", width=160)
             except:
-                st.caption("Logo SGN")
-            st.markdown('</div>', unsafe_allow_html=True)
+                st.caption("SGN Logo")
         
         with m:
             st.markdown(f"""
                 <div style="text-align:center;">
                     <h1 style="margin:0; font-size: 45px;">🎋 CANE METRIX</h1>
                     <p style="margin:0; font-weight: bold; font-size: 18px;">Accelerating QA Performance</p>
-                    <h2 style="font-family: monospace; margin-top:5px; font-size: 32px;">{tgl_skrg} | {jam_skrg}</h2>
+                    <h2 style="font-family: monospace; margin-top:5px; font-size: 30px;">{tgl_skrg} | {jam_skrg}</h2>
                 </div>
             """, unsafe_allow_html=True)
             
         with r:
-            k1, k2 = st.columns(2, vertical_alignment="center")
-            with k1:
-                # PTPN - Skala 12.0 & Top 100px via CSS
-                st.markdown('<div class="logo-ptpn">', unsafe_allow_html=True)
-                try: 
-                    st.image("ptpn.png", use_container_width=True) 
-                except: 
-                    st.caption("PTPN")
-                st.markdown('</div>', unsafe_allow_html=True)
-            with k2:
-                st.markdown('<div class="logo-lpp">', unsafe_allow_html=True)
-                try: 
-                    st.image("lpp.png", use_container_width=True)
-                except: 
-                    st.caption("LPP")
-                st.markdown('</div>', unsafe_allow_html=True)
+            # Logo LPP (Sekarang sendirian di kanan jadi lebih lega)
+            try: 
+                st.image("lpp.png", width=130)
+            except: 
+                st.caption("LPP Logo")
 
     st.divider()
 
@@ -135,7 +110,11 @@ if selected == "Dashboard":
             st.markdown("### 📈 Trend")
             st.button("Buka", key="b6", use_container_width=True)
 
-    # Refresh tiap detik
+    # Footer Status
+    st.write("")
+    st.info(f"🟢 Server OK | WIB | {jam_skrg}")
+
+    # Real-time Update
     time.sleep(1)
     st.rerun()
 
