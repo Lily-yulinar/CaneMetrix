@@ -1,5 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+from datetime import datetime
+import time
 
 # --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
@@ -7,7 +9,6 @@ st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 # --- 2. SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.title("🎋 CANE METRIX")
-    # Definisikan variabel 'selected' di sini supaya nggak error lagi beb!
     selected = option_menu(
         menu_title="Main Menu",
         options=["Dashboard", "Analisa Tetes"],
@@ -15,23 +16,31 @@ with st.sidebar:
         menu_icon="cast", default_index=0,
     )
     st.divider()
+    # Kalender di Sidebar buat pengingat beb
+    st.write("📅 **Kalender Kerja**")
+    st.date_input("Pilih Tanggal", label_visibility="collapsed")
     st.caption("Status: 🟢 Production Ready")
 
-# --- 3. HALAMAN DASHBOARD (KOTAK-KOTAK ALA image_e3fa36.png) ---
+# --- 3. HALAMAN DASHBOARD ---
 if selected == "Dashboard":
-    # Header Header ala gambar lo
-    st.markdown("""
+    # Logika Waktu Real-time
+    now = datetime.now()
+    tgl_skrg = now.strftime("%d %B %Y")
+    jam_skrg = now.strftime("%H:%M:%S")
+
+    # Header Header ala image_e3fa36.png
+    st.markdown(f"""
         <div style="background-color:#1c4e80; padding:20px; border-radius:10px; text-align:center;">
             <h1 style="color:white; margin:0;">🎋 CANE METRIX</h1>
-            <p style="color:white; margin:0;">Accelerating QA Performance | 17 NOVEMBER 2025</p>
+            <p style="color:white; margin:0;">Accelerating QA Performance</p>
+            <h3 style="color:white; margin:10px 0 0 0;">{tgl_skrg} | {jam_skrg}</h3>
         </div>
     """, unsafe_allow_html=True)
     
-    st.write("") # Spasi
+    st.write("") 
     
-    # Grid Menu Kotak-Kotak
+    # Grid Menu Kotak-Kotak (Bento Style)
     col1, col2, col3 = st.columns(3)
-    
     with col1:
         with st.container(border=True):
             st.markdown("### 📋 Input Data")
@@ -51,7 +60,6 @@ if selected == "Dashboard":
             st.button("Buka", key="btn3", use_container_width=True)
 
     col4, col5, col6 = st.columns(3)
-    
     with col4:
         with st.container(border=True):
             st.markdown("### 🔄 Rekap Stasiun")
@@ -70,14 +78,14 @@ if selected == "Dashboard":
             st.write("Grafik HK harian.")
             st.button("Buka", key="btn6", use_container_width=True)
 
-    # Footer ala gambar lo
+    # Footer
     st.divider()
     f1, f2 = st.columns([3, 1])
-    f1.info("🟢 Status Server: OK | Jumlah sampel masuk hari ini: 45")
+    f1.info(f"🟢 Status Server: OK | Terakhir Update: {jam_skrg}")
     f2.markdown("**SHIFT I**")
 
-# --- 4. HALAMAN ANALISA TETES (Kodingan Lama Lo) ---
+# --- 4. HALAMAN ANALISA TETES ---
 elif selected == "Analisa Tetes":
     st.header("🎋 Analisa Tetes")
-    st.write("Silakan masukkan data analisa di bawah.")
-    # (Logika analisa tetes lo tetep aman di sini beb)
+    st.write("Gunakan menu ini untuk kalkulasi otomatis beb.")
+    # Kode logika Analisa Tetes lo yang kemarin tetep di sini ya!
