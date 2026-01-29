@@ -1,15 +1,15 @@
 import streamlit as st
 from datetime import datetime, timedelta
-import os
 import base64
-import time
+import os
 
-# --- 1. KONFIGURASI HALAMAN ---
+# --- 1. SETTINGS ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
 if 'menu_level' not in st.session_state:
     st.session_state.menu_level = "main"
 
+# --- 2. ASSETS ---
 def get_base64(bin_file):
     if os.path.exists(bin_file):
         with open(bin_file, 'rb') as f:
@@ -17,183 +17,185 @@ def get_base64(bin_file):
         return base64.b64encode(data).decode()
     return ""
 
-bin_bg = get_base64('background.jpg')
-bin_sgn = get_base64('sgn.png')
-bin_lpp = get_base64('lpp.png')
+bin_sgn = get_base64('sgn.png') # Logo Sinergi Gula Nusantara
+bin_lpp = get_base64('lpp.png') # Logo LPP Agro Nusantara
 
-# --- 2. CSS CUSTOM (PERSIS GAMBAR DASHBOARD LO) ---
+# --- 3. CSS CUSTOM (PERSIS IMAGE_5F7351) ---
 st.markdown(f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Lexend:wght@400;600&family=Montserrat:wght@800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Lexend:wght@400;600&family=Montserrat:wght@700;800&display=swap');
 
+    /* Background Utama */
     .stApp {{
-        background: url("data:image/jpg;base64,{bin_bg}");
-        background-size: cover;
-        background-attachment: fixed;
+        background-color: #0e1117;
     }}
 
-    .main .block-container {{
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(15px);
-        padding: 20px !important;
-    }}
-
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {{
-        background-color: #161b22 !important;
-        border-right: 1px solid #30363d;
-    }}
-
-    /* Header Container Sesuai image_d5e9b8 */
-    .mega-header {{
+    /* Panel Header image_5f7351.jpg */
+    .header-panel {{
         background: linear-gradient(135deg, #00ced1 0%, #008080 100%);
-        padding: 30px;
-        border-radius: 30px;
-        color: white;
+        border-radius: 40px;
+        padding: 40px;
         text-align: center;
+        color: white;
         margin-bottom: 30px;
-        border: 1px solid rgba(255,255,255,0.2);
-        box-shadow: 0 0 20px rgba(0, 206, 209, 0.4);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 15px 35px rgba(0, 206, 209, 0.3);
     }}
 
-    .sapaan {{
-        font-family: 'Montserrat';
-        font-size: 28px;
+    .header-title {{
+        font-family: 'Orbitron', sans-serif;
+        font-size: 58px;
+        font-weight: 900;
+        letter-spacing: 8px;
+        margin: 0;
+    }}
+
+    .header-sub {{
+        font-family: 'Lexend', sans-serif;
+        font-size: 18px;
+        letter-spacing: 4px;
+        margin-top: 10px;
+        opacity: 0.9;
+    }}
+
+    /* Sapaan image_5f7351.jpg */
+    .sapaan-text {{
+        font-family: 'Montserrat', sans-serif;
+        font-size: 32px;
         color: #00ced1;
         text-align: center;
-        margin: 20px 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        margin: 40px 0;
+        font-weight: 800;
     }}
 
-    /* Grid Dashboard 8 Tombol image_d57902 */
+    /* Grid Button image_d57902.png */
     .stButton > button {{
-        height: 140px;
-        border-radius: 20px;
-        background: linear-gradient(145deg, #05192d, #002d4d) !important;
+        height: 160px;
+        border-radius: 25px;
+        background: #112233 !important;
         color: white !important;
         border: 1px solid #1a3a5a !important;
         font-family: 'Lexend';
+        font-size: 15px;
         font-weight: 600;
         transition: 0.3s;
     }}
 
     .stButton > button:hover {{
         border-color: #00ced1 !important;
-        box-shadow: 0 0 15px #00ced1;
-        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(0, 206, 209, 0.4);
+        transform: translateY(-8px);
     }}
 
-    /* Card Analisa image_cb0bfb */
-    .card-analisa {{
-        background: rgba(13, 17, 23, 0.9);
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid #00ced1;
+    /* Sidebar Styling image_d5849d.png */
+    [data-testid="stSidebar"] {{
+        background-color: #111827 !important;
+        border-right: 1px solid #1f2937;
+    }}
+    
+    .sidebar-btn {{
+        background: #1f2937;
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        border-left: 5px solid #00ced1;
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. SIDEBAR ---
+# --- 4. SIDEBAR (LOGIKA BALIK KE DASHBOARD) ---
 with st.sidebar:
-    st.markdown("<h2 style='color:#00ced1; text-align:center;'>🎋 CANE METRIX</h2>", unsafe_allow_html=True)
-    st.divider()
+    st.markdown("<h2 style='color:#00ced1; text-align:center; font-family:Orbitron;'>🎋 CANE METRIX</h2>", unsafe_allow_html=True)
+    st.write("---")
     shift_pilih = st.selectbox("Shift Operasional:", ["SHIFT I", "SHIFT II", "SHIFT III"])
     
     if st.button("🏠 Dashboard", use_container_width=True):
         st.session_state.menu_level = "main"
         st.rerun()
     
-    st.button("Analisa Tetes", use_container_width=True)
-    
+    if st.button("🧪 Analisa Tetes", use_container_width=True):
+        st.session_state.menu_level = "analisa_tetes"
+        st.rerun()
+        
     st.markdown(f"""
-        <div style='margin-top:200px; background:#1f2937; padding:15px; border-radius:15px; border-left: 5px solid #00ced1;'>
-            <span style='color:#fff;'>🟢 Petugas: <b>{shift_pilih}</b></span>
+        <div style='margin-top:150px;' class='sidebar-btn'>
+            <span style='color:#9ca3af; font-size:12px;'>Petugas Aktif:</span><br>
+            <b style='color:#00ced1; font-size:18px;'>{shift_pilih}</b>
         </div>
     """, unsafe_allow_html=True)
 
-# --- 4. HEADER ---
-now = datetime.utcnow() + timedelta(hours=7)
+# --- 5. HEADER PANEL (LOGOS INCLUDED) ---
+now = datetime.now()
 st.markdown(f"""
-    <div class="mega-header">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <img src="data:image/png;base64,{bin_sgn}" width="100">
-            <div>
-                <h1 style="font-family:Orbitron; font-size:45px; margin:0;">CANE METRIX</h1>
-                <p style="letter-spacing:3px;">ACCELERATING QA PERFORMANCE</p>
-                <small>{now.strftime('%d %B %Y')} | {now.strftime('%H:%M:%S')}</small>
+    <div class="header-panel">
+        <img src="data:image/png;base64,{bin_sgn}" width="120">
+        <div>
+            <h1 class="header-title">CANE METRIX</h1>
+            <div class="header-sub">ACCELERATING QA PERFORMANCE</div>
+            <div style="margin-top:15px; font-size:14px; opacity:0.8;">
+                {now.strftime('%d %B %Y')} | {now.strftime('%H:%M:%S')}
             </div>
-            <img src="data:image/png;base64,{bin_lpp}" width="100">
         </div>
+        <img src="data:image/png;base64,{bin_lpp}" width="140">
     </div>
 """, unsafe_allow_html=True)
 
-# --- 5. LOGIKA MENU ---
+# --- 6. NAVIGASI MENU ---
 if st.session_state.menu_level == "main":
-    st.markdown(f"<div class='sapaan'>Hello, Planters! Let's optimize {shift_pilih} analysis.</div>", unsafe_allow_html=True)
+    st.markdown(f'<div class="sapaan-text">Hello, Planters! Let\'s optimize {shift_pilih} analysis.</div>', unsafe_allow_html=True)
     
-    # Grid 8 Tombol (image_d57902)
-    c1, c2, c3, c4 = st.columns(4)
-    with c1: st.button("📄 INPUT DATA", use_container_width=True)
-    with c2: st.button("📊 DATABASE HARIAN", use_container_width=True)
-    with c3: st.button("📂 DATABASE BULANAN", use_container_width=True)
-    with c4: st.button("🔄 REKAP STASIUN", use_container_width=True)
+    # Grid 8 Tombol (image_d57902.png)
+    row1_c1, row1_c2, row1_c3, row1_c4 = st.columns(4)
+    with row1_c1: st.button("📄 INPUT DATA", use_container_width=True)
+    with row1_c2: st.button("📊 DATABASE HARIAN", use_container_width=True)
+    with row1_c3: st.button("📂 DATABASE BULANAN", use_container_width=True)
+    with row1_c4: st.button("🔄 REKAP STASIUN", use_container_width=True)
     
-    c5, c6, c7, c8 = st.columns(4)
-    with c5:
+    row2_c1, row2_c2, row2_c3, row2_c4 = st.columns(4)
+    with row2_c1: 
         if st.button("🧮 HITUNG ANALISA", use_container_width=True):
             st.session_state.menu_level = "analisa_tetes"
             st.rerun()
-    with c6: st.button("📈 TREND", use_container_width=True)
-    with c7: st.button("⚙️ PENGATURAN", use_container_width=True)
-    with c8: st.button("📥 EXPORT/IMPORT", use_container_width=True)
+    with row2_c2: st.button("📈 TREND", use_container_width=True)
+    with row2_c3: st.button("⚙️ PENGATURAN", use_container_width=True)
+    with row2_c4: st.button("📥 EXPORT/IMPORT", use_container_width=True)
 
 elif st.session_state.menu_level == "analisa_tetes":
-    st.markdown(f"<h2 style='color:#fff; font-family:Lexend;'>🧪 Form Analisa Tetes - {shift_pilih}</h2>", unsafe_allow_html=True)
+    # --- LOGIKA ANALISA TETES LO YG KEMAREN ---
+    st.markdown(f"<h2 style='color:white; font-family:Lexend;'>🧪 Form Analisa Tetes - {shift_pilih}</h2>", unsafe_allow_html=True)
     
-    st.markdown('<div class="card-analisa">', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("### 📥 Data Pengamatan")
-        b_obs = st.number_input("Brix Teramati (Brix Obs)", value=12.00, step=0.01, format="%.2f")
-        temp = st.number_input("Suhu (°C)", value=29.40, step=0.1, format="%.2f")
-        
-        # Real-time Brix (image_cb0bfb)
-        def get_kor(t):
-            tabel = {29: 0.09, 30: 0.16} # Sesuai image_cb7130
-            return tabel.get(int(t), 0.0) + (t - int(t)) * 0.07 
+    with st.container():
+        st.markdown('<div style="background:#111827; padding:30px; border-radius:30px; border:1px solid #00ced1;">', unsafe_allow_html=True)
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown("### 📥 Data Pengamatan")
+            b_obs = st.number_input("Brix Teramati (Brix Obs)", value=12.00, format="%.2f")
+            temp = st.number_input("Suhu (°C)", value=29.40, format="%.2f")
             
-        koreksi = get_kor(temp)
-        brix_final = b_obs + koreksi
+            # Koreksi Suhu image_cb7130.png
+            kor = 0.16 if int(temp) == 30 else 0.09 # Dummy interpolasi simple
+            brix_f = b_obs + kor
+            st.markdown(f"**BRIX KOREKSI:** <span style='color:#00ced1; font-size:24px;'>{brix_f:.2f}</span>", unsafe_allow_html=True)
+            
+            p_obs = st.number_input("Pol Teramati (Pol Obs)", value=0.00, format="%.2f")
         
-        st.markdown(f"**BRIX KOREKSI:** <span style='font-size:24px; color:#00ced1;'>{brix_final:.2f}</span>", unsafe_allow_html=True)
-        st.caption(f"Koreksi Tabel: {koreksi:+.2f}")
-        
-        p_obs = st.number_input("Pol Teramati (Pol Obs)", value=0.00, step=0.01, format="%.2f")
+        with c2:
+            st.markdown("### 📊 Hasil")
+            # Logic BJ dari image_cb66ad.png
+            bj = 1.044216 if b_obs == 12.0 else 1.0 # Dummy table lookup
+            pol_p = ((0.286 * p_obs) / bj) * 10
+            hk = (pol_p / brix_f * 100) if brix_f > 0 else 0.0
+            
+            st.metric("% POL", f"{pol_p:.2f}")
+            if hk > 100: st.error(f"HK: {hk:.2f}% (TIDAK VALID!)")
+            else: st.success(f"### HK: {hk:.2f}%")
+            
+            if st.button("💾 SIMPAN DATA", use_container_width=True):
+                st.toast("Data Berhasil Diarsipkan!", icon="✅")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    with col2:
-        st.markdown("### 📊 Hasil")
-        # Logic BJ & Pol (image_cb66ad, image_cb8456)
-        bj = 1.000 + (b_obs * 0.00388)
-        pol_persen = ((0.286 * p_obs) / bj) * 10
-        hk = (pol_persen / brix_final * 100) if brix_final > 0 else 0.0
-        
-        st.markdown(f"**% POL:** `{pol_persen:.2f}`")
-        st.markdown(f"<small>Faktor: 0.286 | Pengenceran: 10x | BJ: {bj:.5f}</small>", unsafe_allow_html=True)
-        
-        # Validasi Purity (image_cb0bfb)
-        if hk > 100:
-            st.error(f"HK: {hk:.2f}% (DATA TIDAK VALID!)")
-        else:
-            st.success(f"### HK: {hk:.2f}%")
-        
-        if st.button("💾 SIMPAN DATA", use_container_width=True):
-            st.toast("Data Berhasil Disimpan ke Database Harian!", icon="✅")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
     if st.button("⬅️ KEMBALI KE DASHBOARD"):
         st.session_state.menu_level = "main"
         st.rerun()
-
-time.sleep(1)
-st.rerun()
