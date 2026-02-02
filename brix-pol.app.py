@@ -2,10 +2,9 @@ import streamlit as st
 from datetime import datetime
 import time
 
-# --- 1. SETTINGS & LUXURY GLASS UI (DILOCK TOTAL) ---
+# --- 1. SETTINGS & LUXURY UI (DILOCK TOTAL - NO CHANGES) ---
 st.set_page_config(page_title="CANE METRIX", page_icon="🎋", layout="wide")
 
-# CSS Tetap Mewah & Kotak-kotak (image_d57902)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:wght@800&family=Lexend:wght@600&display=swap');
@@ -43,86 +42,119 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. LOGIKA TABEL (FIXED SESUAI GAMBAR) ---
+# --- 2. LOGIKA TABEL BARU (GAMBAR 1, 2, 3) ---
+
 def get_koreksi_suhu(temp):
-    # Data sesuai tabel image_cb7130.png
-    tabel = {25:-0.19, 26:-0.12, 27:-0.05, 28:0.02, 29:0.09, 30:0.16, 31:0.24, 32:0.315, 33:0.385, 34:0.465, 35:0.54}
-    t_int = int(temp)
-    return tabel.get(t_int, 0.0)
+    """Update Data dari Gambar 1"""
+    # Mapping data tabel suhu lab lo beb
+    tabel_suhu = {
+        25: -0.19, 26: -0.12, 27: -0.05, 28: 0.02, 29: 0.09, 30: 0.16,
+        31: 0.24, 32: 0.315, 33: 0.385, 34: 0.465, 35: 0.54, 36: 0.62,
+        37: 0.70, 38: 0.78, 39: 0.86, 40: 0.94
+    }
+    t_round = int(temp)
+    val = tabel_suhu.get(t_round, 0.0)
+    # Interpolasi halus
+    if t_round + 1 in tabel_suhu:
+        next_val = tabel_suhu[t_round + 1]
+        val += (temp - t_round) * (next_val - val)
+    return val
 
 def get_bj_icumsa(brix_val):
-    # Data sesuai image_cb66ad.png & image_cb6690.png
-    bj_map = {0.0: 0.996373, 10.0: 1.035950, 12.0: 1.044216, 15.0: 1.056841, 20.0: 1.078497}
-    keys = sorted(bj_map.keys())
+    """Update Data dari Gambar 2 & 3"""
+    # Mencakup data 0.0 - 23.9 Brix dari ICUMSA Method Book lo
+    bj_db = {
+        0.0: 0.996373, 1.0: 1.000201, 2.0: 1.004058, 3.0: 1.007944, 4.0: 1.011858,
+        5.0: 1.015801, 6.0: 1.019772, 7.0: 1.023773, 8.0: 1.027803, 9.0: 1.031862,
+        10.0: 1.035950, 11.0: 1.040068, 12.0: 1.044216, 13.0: 1.048394, 14.0: 1.052602,
+        15.0: 1.056841, 16.0: 1.061110, 17.0: 1.065410, 18.0: 1.069741, 19.0: 1.074103,
+        20.0: 1.078497, 21.0: 1.082923, 22.0: 1.087380, 23.0: 1.091870, 23.9: 1.095939
+    }
+    keys = sorted(bj_db.keys())
+    if brix_val <= keys[0]: return bj_db[keys[0]]
+    if brix_val >= keys[-1]: return bj_db[keys[-1]]
     for i in range(len(keys)-1):
         if keys[i] <= brix_val <= keys[i+1]:
             b1, b2 = keys[i], keys[i+1]
-            v1, v2 = bj_map[b1], bj_map[b2]
+            v1, v2 = bj_db[b1], bj_db[b2]
             return v1 + (brix_val - b1) * (v2 - v1) / (b2 - b1)
-    return 1.044216
+    return 1.0
 
-# --- 3. UI COMPONENTS ---
+# --- 3. UI & REAL-TIME CLOCK ---
+
 if 'menu' not in st.session_state: st.session_state.menu = "main"
 
-# HEADER DENGAN FIX REAL-TIME CLOCK
+# Jam Real-time sinkron laptop
 now = datetime.now()
 st.markdown(f"""
     <div class="header-panel">
         <h1 style="font-family:Orbitron; font-size:55px; letter-spacing:8px; margin:0; color:white;">CANE METRIX</h1>
         <p style="font-family:Lexend; color:white; opacity:0.8;">ACCELERATING QA PERFORMANCE</p>
-        <div style="font-family:Orbitron; color:#00ced1; font-size:20px; margin-top:15px; border-top:1px solid rgba(0,206,209,0.3); padding-top:10px;">
-            {now.strftime('%d %B %Y')} | <span style="text-shadow: 0 0 10px #00ced1;">{now.strftime('%H:%M:%S')}</span>
+        <div style="font-family:Orbitron; color:#00ced1; font-size:22px; margin-top:15px; text-shadow: 0 0 10px #00ced1;">
+            {now.strftime('%d %B %Y')} | {now.strftime('%H:%M:%S')}
         </div>
     </div>
 """, unsafe_allow_html=True)
 
 if st.session_state.menu == "main":
     cols = st.columns(4)
-    menu_list = [
+    menu_items = [
         ("📄", "INPUT DATA"), ("🧮", "HITUNG ANALISA"), 
         ("📊", "DATABASE HARIAN"), ("📂", "DATABASE BULANAN"),
         ("🔄", "REKAP STASIUN"), ("📈", "TREND"), 
         ("⚙️", "PENGATURAN"), ("📥", "EXPORT/IMPORT")
     ]
-    for i, (icon, label) in enumerate(menu_list):
+    for i, (icon, label) in enumerate(menu_items):
         with cols[i % 4]:
-            if st.button(f"{icon}\n\n{label}", key=f"btn_{i}", use_container_width=True):
+            if st.button(f"{icon}\n\n{label}", key=f"m_{i}", use_container_width=True):
                 if label == "HITUNG ANALISA": st.session_state.menu = "calc"; st.rerun()
 
 elif st.session_state.menu == "calc":
     tab1, tab2 = st.tabs(["🍯 ANALISA TETES", "🧪 OPTICAL DENSITY (OD)"])
+    
     with tab1:
-        st.markdown('<div style="background:rgba(255,255,255,0.05); padding:35px; border-radius:25px; border:1px solid #00ced1;">', unsafe_allow_html=True)
+        st.markdown('<div style="background:rgba(255,255,255,0.05); padding:30px; border-radius:25px; border:1px solid #00ced1;">', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            b_baca = st.number_input("Brix Baca Alat", value=1.20, format="%.2f")
-            p_baca = st.number_input("Pol Baca Alat", value=0.00, format="%.2f")
-            temp = st.number_input("Suhu Lab (°C)", value=30.00, format="%.2f")
+            # Sesuai urutan image_cb0bfb.png
+            b_baca = st.number_input("Brix Teramati (Brix Obs)", value=1.20, format="%.2f")
+            p_baca = st.number_input("Pol Teramati (Pol Obs)", value=0.00, format="%.2f")
+            temp = st.number_input("Suhu (°C)", value=29.40, format="%.2f")
+            
+            # Hitungan %Brix (pengenceran x10)
             brix_p = b_baca * 10
-            kor = get_koreksi_suhu(temp)
-            brix_kor = brix_p + kor
+            # Brix Koreksi = %Brix + Tabel (Gambar 1)
+            kor_suhu = get_koreksi_suhu(temp)
+            brix_kor = brix_p + kor_suhu
+            
         with c2:
-            bj = get_bj_icumsa(brix_p)
-            pol_p = (0.286 * (p_baca * 2)) / bj
+            # BJ dari tabel (Gambar 2 & 3)
+            bj_val = get_bj_icumsa(brix_p)
+            # %Pol = (0.286 x (Pol baca x 2)) / BJ
+            pol_p = (0.286 * (p_baca * 2)) / bj_val
+            # HK = %Pol / Brix Koreksi (Brix yg sudah dikali 10 & kor suhu)
             hk = (pol_p / brix_kor * 100) if brix_kor > 0 else 0.0
+            
             st.metric("BRIX KOREKSI", f"{brix_kor:.2f}")
             st.metric("% POL", f"{pol_p:.2f}")
             st.success(f"### HK: {hk:.2f}%")
         st.markdown('</div>', unsafe_allow_html=True)
-    
+
     with tab2:
-        st.markdown('<div style="background:rgba(255,255,255,0.05); padding:35px; border-radius:25px; border:1px solid #00ced1;">', unsafe_allow_html=True)
-        abs_v = st.number_input("Absorbance (Abs)", value=0.000, format="%.3f")
-        b_od = st.number_input("Brix untuk OD (x10)", value=12.00)
-        bj_od = get_bj_icumsa(b_od)
-        od_total = (abs_v * bj_od * 500) / 1
-        st.markdown(f"### HASIL OD TETES: {od_total:.4f}")
+        st.markdown('<div style="background:rgba(255,255,255,0.05); padding:30px; border-radius:25px; border:1px solid #00ced1;">', unsafe_allow_html=True)
+        abs_val = st.number_input("Absorbance (Abs)", value=0.000, format="%.3f")
+        brix_sampel = st.number_input("Brix Sampel", value=12.00)
+        
+        # OD = Abs x BJ x 500 / 1
+        bj_od = get_bj_icumsa(brix_sampel)
+        od_res = (abs_val * bj_od * 500) / 1
+        
+        st.markdown(f"### HASIL OD TETES: {od_res:.4f}")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    if st.button("⬅️ DASHBOARD"):
+    if st.button("⬅️ KEMBALI KE DASHBOARD", use_container_width=True):
         st.session_state.menu = "main"; st.rerun()
 
-# --- 4. AUTO-REFRESH SETIAP 1 DETIK ---
-# Ini yang bikin jam di laptop lo sinkron beb!
+# --- 4. ENGINE AUTO-REFRESH (JAM REAL-TIME) ---
 time.sleep(1)
 st.rerun()
